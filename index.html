@@ -1,11 +1,18 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>지제역풍경채어바니티_2BL 등기비용 모의계산기</title>
+    <title>지제역풍경채어바니티_2BL 등기비용 및 총원가 계산기</title>
     <style>
-        :root { --primary-color: #1a5d3b; --accent-color: #0984e3; --red-color: #d63031; --gold-color: #f1c40f; }
+        :root { 
+            --primary-color: #1a5d3b; 
+            --accent-color: #0984e3; 
+            --red-color: #d63031; 
+            --gold-color: #f1c40f; 
+            --chrarre-bg: #2c3e50; /* 조금 더 부드러운 네이비 톤으로 변경 */
+        }
         body { font-family: 'Pretendard', sans-serif; line-height: 1.1; color: #333; max-width: 480px; margin: 0 auto; padding: 10px; background: #f4f7f6; font-size: 14px; }
         h1 { text-align: center; color: var(--primary-color); font-size: 1.3em; margin: 5px 0 12px 0; font-weight: 900; }
         input, select { width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.95em; font-weight: 600; text-align: right; box-sizing: border-box; }
@@ -22,12 +29,15 @@
         .total-row { display: flex; justify-content: space-between; margin-top: 8px; padding-top: 8px; border-top: 2px solid var(--red-color); color: var(--red-color); font-size: 1.35em; font-weight: 900; }
         .action { cursor: pointer; border: none; border-radius: 4px; padding: 10px; font-weight: bold; color: white; background: #444; flex: 1; }
 
-        /* 촤르르 디자인 추가 */
-        .chrarre-box { background: #1e272e; color: #fff; padding: 15px; border-radius: 8px; margin: 10px 0; text-align: center; border: 2px solid var(--gold-color); }
-        .btn-chrarre { width: 100%; background: #2f3640; color: var(--gold-color); border: 1px solid var(--gold-color); padding: 8px; border-radius: 4px; font-weight: 900; cursor: pointer; margin-top: 5px; }
-        .chrarre-details { display: none; background: #fff; border: 1px solid #ddd; padding: 10px; border-radius: 0 0 8px 8px; margin-top: -5px; color: #333; text-align: left; }
-        .ch-item { margin-bottom: 8px; }
+        /* 촤르르 디자인 개선 */
+        .chrarre-box { background: var(--chrarre-bg); color: #fff; padding: 15px; border-radius: 8px; margin: 10px 0; text-align: center; border: 2px solid var(--gold-color); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .btn-chrarre { width: 100%; background: rgba(255,255,255,0.1); color: var(--gold-color); border: 1.5px solid var(--gold-color); padding: 10px; border-radius: 6px; font-weight: 900; cursor: pointer; margin-top: 8px; transition: 0.3s; }
+        .btn-chrarre:hover { background: rgba(255,255,255,0.2); }
+        .chrarre-details { display: none; background: #fff; border: 1px solid #ddd; padding: 12px; border-radius: 0 0 8px 8px; margin-top: -5px; color: #333; text-align: left; }
+        .ch-item { margin-bottom: 10px; display: flex; align-items: flex-end; gap: 5px; }
+        .ch-input-wrap { flex: 1; }
         .ch-item label { display: block; font-size: 0.75em; color: #666; margin-bottom: 2px; }
+        .btn-del { border: none; background: none; color: var(--red-color); font-weight: 900; cursor: pointer; padding: 5px; font-size: 1.1em; }
     </style>
 </head>
 <body>
@@ -55,22 +65,30 @@
         <div class="res-item"><span>취득세 (교육세 포함)</span><span id="rTax" style="font-weight:bold;">0 원</span></div>
         <div class="res-item"><span>채권 할인료 합계</span><span id="rBondTot">0 원</span></div>
         <div class="res-item"><span>수입인지세 합계</span><span id="rAllS">0 원</span></div>
-        <div class="res-item"><span>기타 실비</span><span>59,000 원</span></div>
+        <div class="res-item"><span>기타 실비</span><span>27,000 원</span></div>
         <div class="total-row"><span>💎 예상 등기 비용(around)</span><span id="rTot">0 원</span></div>
         <div style="text-align:center; margin-top:5px;"><button onclick="tglD()" style="background:none; border:none; color:#666; font-size:0.7em; cursor:pointer; text-decoration:underline;">[상세 산출근거 및 수식 보기]</button></div>
         <div id="tD" style="display:none; font-size:0.85em; background:#f9f9f9; padding:10px; border:1px solid #ddd; margin-top:10px; white-space:pre-line; text-align:left;"></div>
     </div>
 
     <div class="chrarre-box">
-        <div style="font-size:0.9em; opacity:0.8;">💰 우리집 실질 취득원가</div>
-        <div id="finalActualPrice" style="font-size:1.6em; font-weight:900; color:var(--gold-color); margin:5px 0;">0 원</div>
+        <div style="font-size:0.95em; opacity:0.9;">🏠 우리집 실질 취득원가</div>
+        <div id="finalActualPrice" style="font-size:1.7em; font-weight:900; color:var(--gold-color); margin:5px 0; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">0 원</div>
         <button class="btn-chrarre" onclick="tglChrarre()">우리집 총 구입비용 촤르르 ✨ [▼]</button>
     </div>
     <div id="chrarreDetails" class="chrarre-details">
-        <div class="ch-item"><label>⚖️ 법무사 수수료 (감사회원 등 무료 시 0)</label><input type="text" id="legalFee" value="0" oninput="fCalc(this)"></div>
-        <div class="ch-item"><label>🏦 중도금 후불이자 합계</label><input type="text" id="afterInterest" value="0" oninput="fCalc(this)"></div>
-        <div id="addOptList"><label>🛠️ 입주 후 별도 옵션 (줄눈, 탄성 등)</label></div>
-        <button onclick="addMoreOpt()" style="width:100%; padding:5px; background:#f4f4f4; border:1px dashed #aaa; border-radius:4px; font-size:0.8em; cursor:pointer;">+ 항목 추가</button>
+        <div class="ch-item" id="itemLegal">
+            <div class="ch-input-wrap"><label>⚖️ 법무사 수수료 (감사회원 등 무료 시 0)</label><input type="text" id="legalFee" value="0" oninput="fCalc(this)"></div>
+            <button class="btn-del" onclick="document.getElementById('legalFee').value=0; calc()">×</button>
+        </div>
+        <div class="ch-item" id="itemInterest">
+            <div class="ch-input-wrap"><label>🏦 중도금 후불이자 합계</label><input type="text" id="afterInterest" value="0" oninput="fCalc(this)"></div>
+            <button class="btn-del" onclick="document.getElementById('afterInterest').value=0; calc()">×</button>
+        </div>
+        <div id="addOptList">
+            <label style="display:block; font-size:0.75em; color:#666; margin-bottom:5px;">🛠️ 입주 후 별도 옵션 (줄눈, 탄성 등)</label>
+        </div>
+        <button onclick="addMoreOpt()" style="width:100%; padding:8px; background:#f8f9fa; border:1.5px dashed #ccc; border-radius:6px; font-size:0.85em; color:#555; cursor:pointer; font-weight:bold; margin-top:5px;">+ 추가 항목 만들기</button>
     </div>
 
     <div class="row" style="margin-top:10px;">
@@ -79,12 +97,13 @@
     </div>
 
     <div style="text-align:center; padding: 15px 0; color: #666; font-size: 0.85em; background: #f4f7f4; border-top: 1px solid #eee;">
-        누적 활용 횟수: <span id="total-hits-text" style="font-weight: bold; color: #2e7d32;">686</span>회
+        누적 활용 횟수: <span id="total-hits-text" style="font-weight: bold; color: #2e7d32;">717</span>회
     </div>
 
 <script>
+    // 누적 카운트 (사용자 캡처본 기준 717회 업데이트)
     (function() {
-        const baseCount = 686;
+        const baseCount = 717;
         const displayEl = document.getElementById('total-hits-text');
         let myCount = parseInt(localStorage.getItem('my_calc_hits') || '0');
         myCount++;
@@ -100,14 +119,13 @@
 
     function addOpt(){
         const div=document.createElement('div'); div.className='opt-row';
-        div.innerHTML=`<input type="text" placeholder="항목" style="text-align:left; flex:1; padding:4px;"><input type="text" class="o-p" value="0" oninput="fCalc(this)" style="width:140px; padding:4px;"><div class="opt-net">순: 0</div><button onclick="this.parentElement.remove();calc()" style="border:none; background:none; color:red; font-weight:bold; cursor:pointer;">X</button>`;
+        div.innerHTML=`<input type="text" placeholder="항목" style="text-align:left; flex:1; padding:4px;"><input type="text" class="o-p" value="0" oninput="fCalc(this)" style="width:140px; padding:4px;"><div class="opt-net">순: 0</div><button onclick="this.parentElement.remove();calc()" style="border:none; background:none; color:red; font-weight:bold; cursor:pointer;">×</button>`;
         document.getElementById('optContainer').appendChild(div);
     }
 
-    // 촤르르 전용 추가 항목
     function addMoreOpt(){
-        const div=document.createElement('div'); div.style="display:flex; gap:5px; margin-bottom:5px;";
-        div.innerHTML=`<input type="text" placeholder="항목" style="flex:1; text-align:left;"><input type="text" class="ch-opt-p" value="0" oninput="fCalc(this)" style="width:120px;"><button onclick="this.parentElement.remove();calc()" style="border:none; background:none; color:red;">×</button>`;
+        const div=document.createElement('div'); div.className='ch-item';
+        div.innerHTML=`<div class="ch-input-wrap"><input type="text" placeholder="항목 입력" style="flex:1; text-align:left; margin-bottom:2px;"><input type="text" class="ch-opt-p" value="0" oninput="fCalc(this)" style="width:100%;"></div><button class="btn-del" onclick="this.parentElement.remove();calc()">×</button>`;
         document.getElementById('addOptList').appendChild(div);
     }
 
@@ -183,7 +201,7 @@
         const dong = document.getElementById('dong').value, ho = document.getElementById('ho').value;
         const total = document.getElementById('finalActualPrice').innerText;
         const deunggi = document.getElementById('rTot').innerText;
-        let mailBody = `🏠 [지제역풍경채어바니티 2BL 구입비용 리포트]\n📍 대상: ${dong||' '}동 ${ho||' '}호\n💰 실질 취득원가: ${total}\n💎 예상 등기 비용: ${deunggi}\n------------------\n※ 상세 내용은 계산기 내 '촤르르' 섹션 참고`;
+        let mailBody = `🏠 [지제역풍경채어바니티 2BL 실질 취득원가 리포트]\n📍 대상: ${dong||' '}동 ${ho||' '}호\n💰 총 구입비용 합계: ${total}\n💎 예상 등기 비용: ${deunggi}\n------------------\n※ 본 계산은 모의 산출값이므로 실제 금액과 다를 수 있습니다.`;
         const subject = encodeURIComponent(`${dong}동 ${ho}호 우리집 총 구입비용 촤르르 ✨`);
         window.location.href = `mailto:?subject=${subject}&body=${encodeURIComponent(mailBody)}`;
     }
