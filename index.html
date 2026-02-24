@@ -53,6 +53,29 @@
         <button class="action" onclick="window.print()">인쇄하기</button>
     </div>
 
+<div style="text-align:center; padding: 15px 0; color: #666; font-size: 0.85em; background: #f4f7f4; border-top: 1px solid #eee;">
+    누적 활용 횟수: <span id="total-hits-text" style="font-weight: bold; color: #2e7d32;">625</span>회
+</div>
+
+<img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=본인의_깃허브_주소" 
+     style="display:none;" 
+     onload="updateCounter()">
+
+<script>
+    function updateCounter() {
+        // 989부터 시작하게 만드는 로직
+        const baseCount = 989;
+        const displayEl = document.getElementById('total-hits-text');
+        
+        // 이전에 이 페이지를 열었을 때 저장된 로컬 카운트를 가져옴 (간이 방식)
+        let sessionCount = parseInt(localStorage.getItem('my_calc_hits') || '0');
+        sessionCount++;
+        localStorage.setItem('my_calc_hits', sessionCount);
+        
+        // 화면에 표시 (989 + 현재 접속 횟수)
+        displayEl.innerText = (baseCount + sessionCount).toLocaleString();
+    }
+</script>    
 <script>
 const pData = {'84':{1:433000000,2:445000000,3:459000000,4:469000000,5:478000000,bA:19500000,bB:19900000},'103':{1:{t:520000000,v:28808000},2:{t:537000000,v:29749800},3:{t:554000000,v:30691600},4:{t:566000000,v:31356400},5:{t:576000000,v:31910400},b:23000000}};
 
