@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>지제역풍경채어바니티_2BL 등기비용 및 총원가 계산기</title>
+    <title>지제역풍경채어바니티_2BL 등기비용 모의계산기</title>
     <style>
         :root { --primary-color: #1a5d3b; --accent-color: #0984e3; --red-color: #d63031; --gold-color: #f1c40f; }
         body { font-family: 'Pretendard', sans-serif; line-height: 1.1; color: #333; max-width: 480px; margin: 0 auto; padding: 10px; background: #f4f7f6; font-size: 14px; }
@@ -18,17 +17,17 @@
         .opt-row { display: flex; gap: 5px; margin-bottom: 4px; align-items: center; background: #eaf2f8; padding: 5px; border-radius: 4px; }
         .opt-net { font-size: 0.75em; color: var(--accent-color); font-weight: bold; min-width: 80px; text-align: right; }
         .tax-base-box { background: #fff; border: 2.5px solid #d35400; padding: 10px; border-radius: 6px; margin: 8px 0; text-align: center; color: #d35400; font-weight: 900; }
-        .res-box { border: 2px solid var(--primary-color); border-radius: 8px; padding: 12px; background: #fff; margin-bottom: 10px; }
+        .res-box { border: 2px solid var(--primary-color); border-radius: 8px; padding: 12px; background: #fff; }
         .res-item { display: flex; justify-content: space-between; margin-bottom: 3px; border-bottom: 1px dashed #eee; padding-bottom: 2px; font-size: 0.9em; }
         .total-row { display: flex; justify-content: space-between; margin-top: 8px; padding-top: 8px; border-top: 2px solid var(--red-color); color: var(--red-color); font-size: 1.35em; font-weight: 900; }
         .action { cursor: pointer; border: none; border-radius: 4px; padding: 10px; font-weight: bold; color: white; background: #444; flex: 1; }
-        
-        /* 촤르르 전용 스타일 */
-        .grand-total-box { background: #1e272e; color: #fff; padding: 15px; border-radius: 8px; margin: 10px 0; text-align: center; border: 2px solid var(--gold-color); }
+
+        /* 촤르르 디자인 추가 */
+        .chrarre-box { background: #1e272e; color: #fff; padding: 15px; border-radius: 8px; margin: 10px 0; text-align: center; border: 2px solid var(--gold-color); }
         .btn-chrarre { width: 100%; background: #2f3640; color: var(--gold-color); border: 1px solid var(--gold-color); padding: 8px; border-radius: 4px; font-weight: 900; cursor: pointer; margin-top: 5px; }
-        .chrarre-content { display: none; background: #fff; border: 1px solid #ddd; padding: 10px; border-radius: 0 0 8px 8px; margin-top: -5px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .chrarre-item { margin-bottom: 8px; padding-bottom: 5px; border-bottom: 1px solid #f0f0f0; }
-        .chrarre-item label { display: block; margin-bottom: 3px; font-size: 0.75em; color: #666; }
+        .chrarre-details { display: none; background: #fff; border: 1px solid #ddd; padding: 10px; border-radius: 0 0 8px 8px; margin-top: -5px; color: #333; text-align: left; }
+        .ch-item { margin-bottom: 8px; }
+        .ch-item label { display: block; font-size: 0.75em; color: #666; margin-bottom: 2px; }
     </style>
 </head>
 <body>
@@ -57,31 +56,21 @@
         <div class="res-item"><span>채권 할인료 합계</span><span id="rBondTot">0 원</span></div>
         <div class="res-item"><span>수입인지세 합계</span><span id="rAllS">0 원</span></div>
         <div class="res-item"><span>기타 실비</span><span>59,000 원</span></div>
-        <div class="total-row"><span>💎 예상 등기 비용</span><span id="rTot">0 원</span></div>
-        <div style="text-align:center; margin-top:5px;"><button onclick="tglD()" style="background:none; border:none; color:#666; font-size:0.7em; cursor:pointer; text-decoration:underline;">[상세 산출근거 보기]</button></div>
-        <div id="tD" style="display:none; font-size:0.85em; background:#f9f9f9; padding:10px; border:1px solid #ddd; margin-top:10px; white-space:pre-line;"></div>
+        <div class="total-row"><span>💎 예상 등기 비용(around)</span><span id="rTot">0 원</span></div>
+        <div style="text-align:center; margin-top:5px;"><button onclick="tglD()" style="background:none; border:none; color:#666; font-size:0.7em; cursor:pointer; text-decoration:underline;">[상세 산출근거 및 수식 보기]</button></div>
+        <div id="tD" style="display:none; font-size:0.85em; background:#f9f9f9; padding:10px; border:1px solid #ddd; margin-top:10px; white-space:pre-line; text-align:left;"></div>
     </div>
 
-    <div class="grand-total-box">
-        <div style="font-size: 0.9em; opacity: 0.8;">💰 우리집 실질 취득원가</div>
-        <div id="finalActualPrice" style="font-size: 1.6em; font-weight: 900; color: var(--gold-color); margin: 5px 0;">0 원</div>
+    <div class="chrarre-box">
+        <div style="font-size:0.9em; opacity:0.8;">💰 우리집 실질 취득원가</div>
+        <div id="finalActualPrice" style="font-size:1.6em; font-weight:900; color:var(--gold-color); margin:5px 0;">0 원</div>
         <button class="btn-chrarre" onclick="tglChrarre()">우리집 총 구입비용 촤르르 ✨ [▼]</button>
     </div>
-
-    <div id="chrarreBox" class="chrarre-content">
-        <div class="chrarre-item">
-            <label>⚖️ 법무사 수수료 (감사회원 등 무료 시 0)</label>
-            <input type="text" id="legalFee" value="0" oninput="fCalc(this)" placeholder="0">
-        </div>
-        <div class="chrarre-item">
-            <label>🏦 중도금 후불이자 합계</label>
-            <input type="text" id="afterInterest" value="0" oninput="fCalc(this)" placeholder="0">
-        </div>
-        <div id="afterOptContainer">
-            <label>🛠️ 입주 후 별도 옵션 (줄눈, 탄성 등)</label>
-        </div>
-        <button onclick="addAfterOpt()" style="width:100%; padding:5px; background:#eee; border:1px dashed #bbb; border-radius:4px; font-size:0.8em; cursor:pointer;">+ 옵션 항목 추가</button>
-        <p style="font-size:0.7em; color:#999; margin-top:10px;">* 분양가, 취득세, 선납할인 등은 위 계산 데이터가 실시간 연동됩니다.</p>
+    <div id="chrarreDetails" class="chrarre-details">
+        <div class="ch-item"><label>⚖️ 법무사 수수료 (감사회원 등 무료 시 0)</label><input type="text" id="legalFee" value="0" oninput="fCalc(this)"></div>
+        <div class="ch-item"><label>🏦 중도금 후불이자 합계</label><input type="text" id="afterInterest" value="0" oninput="fCalc(this)"></div>
+        <div id="addOptList"><label>🛠️ 입주 후 별도 옵션 (줄눈, 탄성 등)</label></div>
+        <button onclick="addMoreOpt()" style="width:100%; padding:5px; background:#f4f4f4; border:1px dashed #aaa; border-radius:4px; font-size:0.8em; cursor:pointer;">+ 항목 추가</button>
     </div>
 
     <div class="row" style="margin-top:10px;">
@@ -94,6 +83,15 @@
     </div>
 
 <script>
+    (function() {
+        const baseCount = 686;
+        const displayEl = document.getElementById('total-hits-text');
+        let myCount = parseInt(localStorage.getItem('my_calc_hits') || '0');
+        myCount++;
+        localStorage.setItem('my_calc_hits', myCount);
+        if(displayEl) { displayEl.innerText = (baseCount + myCount).toLocaleString(); }
+    })();
+
     const pData = {'84':{1:433000000,2:445000000,3:459000000,4:469000000,5:478000000,bA:19500000,bB:19900000},'103':{1:{t:520000000,v:28808000},2:{t:537000000,v:29749800},3:{t:554000000,v:30691600},4:{t:566000000,v:31356400},5:{t:576000000,v:31910400},b:23000000}};
 
     function n(v){ return parseInt(v.toString().replace(/[^0-9-]/g,''))||0; }
@@ -106,23 +104,18 @@
         document.getElementById('optContainer').appendChild(div);
     }
 
-    function addAfterOpt(){
-        const div=document.createElement('div');
-        div.style="display:flex; gap:5px; margin-bottom:5px;";
-        div.innerHTML=`<input type="text" placeholder="예: 줄눈" style="flex:1; text-align:left;"><input type="text" class="after-o-p" value="0" oninput="fCalc(this)" style="width:120px;"><button onclick="this.parentElement.remove();calc()" style="border:none; background:none; color:red;">×</button>`;
-        document.getElementById('afterOptContainer').appendChild(div);
+    // 촤르르 전용 추가 항목
+    function addMoreOpt(){
+        const div=document.createElement('div'); div.style="display:flex; gap:5px; margin-bottom:5px;";
+        div.innerHTML=`<input type="text" placeholder="항목" style="flex:1; text-align:left;"><input type="text" class="ch-opt-p" value="0" oninput="fCalc(this)" style="width:120px;"><button onclick="this.parentElement.remove();calc()" style="border:none; background:none; color:red;">×</button>`;
+        document.getElementById('addOptList').appendChild(div);
     }
 
     function tglChrarre(){
-        const box = document.getElementById('chrarreBox');
-        const btn = document.querySelector('.btn-chrarre');
-        if(box.style.display === 'block'){
-            box.style.display = 'none';
-            btn.innerHTML = '우리집 총 구입비용 촤르르 ✨ [▼]';
-        } else {
-            box.style.display = 'block';
-            btn.innerHTML = '우리집 총 구입비용 촤르르 ✨ [▲]';
-        }
+        const d = document.getElementById('chrarreDetails');
+        const b = document.querySelector('.btn-chrarre');
+        if(d.style.display==='block'){ d.style.display='none'; b.innerHTML='우리집 총 구입비용 촤르르 ✨ [▼]'; }
+        else { d.style.display='block'; b.innerHTML='우리집 총 구입비용 촤르르 ✨ [▲]'; }
     }
 
     function upd(){
@@ -144,79 +137,58 @@
         let ty=document.getElementById('tyTxt').innerText.includes("103")?"103":"84";
         let fl=Math.floor(h/100); if(fl>5)fl=5;
         
-        let mp_total = (ty==="103")?pData['103'][fl].t:pData['84'][fl];
-        let mp_taxbase = (ty==="103")?(pData['103'][fl].t-pData['103'][fl].v):pData['84'][fl];
+        let mp_raw = (ty==="103")?pData['103'][fl].t : pData['84'][fl];
+        let mp_tax = (ty==="103")?(pData['103'][fl].t-pData['103'][fl].v):pData['84'][fl];
         
         let bp_total = n(document.getElementById('bPrice_total').innerText);
         let bp_net = Math.floor(bp_total/1.1);
         
-        let opt_total = 0, opt_net = 0;
+        let opt_total=0, opt_net=0;
         document.querySelectorAll('.opt-row').forEach(row=>{ 
-            let val = n(row.querySelector('.o-p').value);
+            let val=n(row.querySelector('.o-p').value); 
             opt_total += val;
-            let net = Math.floor(val/1.1); opt_net += net;
-            row.querySelector('.opt-net').innerText = "순: " + f(net);
+            let net=Math.floor(val/1.1); opt_net+=net; row.querySelector('.opt-net').innerText="순: "+f(net); 
         });
 
         let prepay=n(document.getElementById('prepay').value), pSign=n(document.getElementById('pSign').value), prem=n(document.getElementById('prem').value)*pSign;
-        
-        // 1. 등기비용용 과표
-        let tBase=mp_taxbase+bp_net+opt_net-prepay+prem;
+        let tBase=mp_tax+bp_net+opt_net-prepay+prem;
         document.getElementById('finalTaxBase').innerText=f(tBase)+" 원";
         
         let tax=Math.floor((tBase*(ty==="103"?0.013:0.011))/10)*10;
-        let buyBond=Math.round((tBase*0.021)/10000)*10000;
-        let loan=n(document.getElementById('loan').value);
-        let lRate=parseFloat(document.getElementById('lRate').value);
-        let maxL=Math.floor(loan*lRate);
-        let loanBond=Math.round((maxL*0.01)/10000)*10000;
-        let br=parseFloat(document.getElementById('bRate').value)/100;
-        let bD=Math.floor(buyBond*br), lD=Math.floor(loanBond*br);
-
-        // [수입인지 복구]
-        let ls=(loan>100000000)?75000:(loan>50000000?35000:0);
-        let sB=n(document.getElementById('sSel').value);
+        let buyBond=Math.round((tBase*0.021)/10000)*10000, loan=n(document.getElementById('loan').value), lRate=parseFloat(document.getElementById('lRate').value);
+        let maxL=Math.floor(loan*lRate), loanBond=Math.round((maxL*0.01)/10000)*10000, br=parseFloat(document.getElementById('bRate').value)/100;
+        let bD=Math.floor(buyBond*br), lD=Math.floor(loanBond*br), ls=(loan>100000000)?75000:(loan>50000000?35000:0), sB=n(document.getElementById('sSel').value);
         
         document.getElementById('rTax').innerText=f(tax)+" 원"; 
         document.getElementById('rBondTot').innerText=f(bD+lD)+" 원";
-        document.getElementById('rLS_disp').value=f(ls)+" 원";
+        document.getElementById('rLS_disp').value=f(ls)+" 원"; 
         document.getElementById('rAllS').innerText=f(sB+ls)+" 원";
-
-        let deunggiTotal = tax+bD+lD+sB+ls+59000;
-        document.getElementById('rTot').innerText=f(deunggiTotal)+" 원";
-
-        // 2. 촤르르~ 실질 취득원가 (사용자 추가 항목 반영)
+        
+        let deunggi_total = tax+bD+lD+sB+ls+59000;
+        document.getElementById('rTot').innerText=f(deunggi_total)+" 원";
+        
+        // 촤르르 실시간 합산
         let legal = n(document.getElementById('legalFee').value);
         let interest = n(document.getElementById('afterInterest').value);
-        let afterOpts = 0;
-        document.querySelectorAll('.after-o-p').forEach(input => { afterOpts += n(input.value); });
+        let add_opts = 0;
+        document.querySelectorAll('.ch-opt-p').forEach(input => { add_opts += n(input.value); });
+        
+        let grand_total = (mp_raw + bp_total + opt_total - prepay + prem) + deunggi_total + legal + interest + add_opts;
+        document.getElementById('finalActualPrice').innerText = f(grand_total) + " 원";
 
-        let grandTotal = (mp_total + bp_total + opt_total - prepay + prem) + deunggiTotal + legal + interest + afterOpts;
-        document.getElementById('finalActualPrice').innerText = f(grandTotal) + " 원";
-
-        document.getElementById('tD').innerText=`1. 과표 산출: 분양가(${f(mp_taxbase)})+발코니순(${f(bp_net)})+옵션순(${f(opt_net)})-할인(${f(prepay)})+P(${f(prem)}) = ${f(tBase)}원\n2. 취득세: 과표 × ${ty==="103"?"1.3%":"1.1%"} = ${f(tax)}원\n3. 채권(할인율 ${br*100}%): 이전(${f(buyBond)}원 매입)+대출(${f(loanBond)}원 매입) = 총 ${f(bD+lD)}원 소요\n4. 수입인지: 등기(${f(sB)}원)+대출(${f(ls)}원) = ${f(sB+ls)}원`;
+        document.getElementById('tD').innerText=`1. 과표 산출: 분양가(${f(mp_tax)})+발코니순(${f(bp_net)})+옵션순(${f(opt_net)})-할인(${f(prepay)})+P(${f(prem)}) = ${f(tBase)}원\n2. 취득세: 과표 × ${ty==="103"?"1.3%":"1.1%"} = ${f(tax)}원\n3. 채권(할인율 ${br*100}%): 이전(${f(buyBond)}원 매입)+대출(${f(loanBond)}원 매입) = 총 ${f(bD+lD)}원 소요\n4. 수입인지: 등기(${f(sB)}원)+대출(${f(ls)}원) = ${f(sB+ls)}원`;
     }
 
     function sendMail() {
-        const dong = document.getElementById('dong').value;
-        const ho = document.getElementById('ho').value;
-        const totalCost = document.getElementById('finalActualPrice').innerText;
+        const dong = document.getElementById('dong').value, ho = document.getElementById('ho').value;
+        const total = document.getElementById('finalActualPrice').innerText;
         const deunggi = document.getElementById('rTot').innerText;
-        let mailBody = `🏠 [지제역풍경채어바니티 2BL 우리집 총 구입비용 리포트]\n📍 대상: ${dong||' '}동 ${ho||' '}호\n💰 실질 취득원가 합계: ${totalCost}\n💎 예상 등기 비용: ${deunggi}\n----------------------------------------------\n※ 상세 내역은 계산기 화면의 '촤르르' 항목을 확인해주세요.`;
+        let mailBody = `🏠 [지제역풍경채어바니티 2BL 구입비용 리포트]\n📍 대상: ${dong||' '}동 ${ho||' '}호\n💰 실질 취득원가: ${total}\n💎 예상 등기 비용: ${deunggi}\n------------------\n※ 상세 내용은 계산기 내 '촤르르' 섹션 참고`;
         const subject = encodeURIComponent(`${dong}동 ${ho}호 우리집 총 구입비용 촤르르 ✨`);
         window.location.href = `mailto:?subject=${subject}&body=${encodeURIComponent(mailBody)}`;
     }
 
     function tglD(){ let e=document.getElementById('tD'); e.style.display=e.style.display==='block'?'none':'block'; }
-    
-    (function() {
-        const baseCount = 686;
-        const displayEl = document.getElementById('total-hits-text');
-        let myCount = parseInt(localStorage.getItem('my_calc_hits') || '0');
-        myCount++;
-        localStorage.setItem('my_calc_hits', myCount);
-        if(displayEl) displayEl.innerText = (baseCount + myCount).toLocaleString();
-    })();
 </script>
 </body>
 </html>
